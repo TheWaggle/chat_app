@@ -3,7 +3,7 @@ defmodule ChatApp.Repo.Migrations.CreateRooms do
 
   def change do
     create table(:rooms) do
-      add :room_name, :string
+      add :room_name, :string, null: false
 
       timestamps()
     end
