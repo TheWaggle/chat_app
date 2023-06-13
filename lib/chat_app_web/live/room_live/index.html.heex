@@ -17,6 +17,11 @@
     <div class="sr-only">
       <.link navigate={~p"/rooms/#{room}"}>Show</.link>
     </div>
+    <.link phx-click="join" phx-value-id={room.id} :if={@current_account.id not in Enum.map(room.accounts, & &1.id)}>
+      Join
+    </.link>
+  </:action>
+  <:action :let={{_id, room}}>
     <.link patch={~p"/rooms/#{room}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, room}}>

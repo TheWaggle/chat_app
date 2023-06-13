@@ -20,7 +20,9 @@ defmodule ChatApp.Rooms do
 
   """
   def list_rooms do
-    Repo.all(Room)
+    Room
+    |> preload(:accounts)
+    |> Repo.all()
   end
 
   @doc """
@@ -46,6 +48,12 @@ defmodule ChatApp.Rooms do
       %Member{account_id: account_id, room_id: room_id}
     end)
     |> Repo.transaction()
+  end
+
+  def join_room(account_id, room_id) do
+    %Member{}
+    |> Member.changeset(%{"account_id" => account_id, "room_id" => room_id})
+    |> Repo.insert()
   end
 
   @doc """

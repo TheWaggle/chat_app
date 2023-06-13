@@ -47,6 +47,17 @@ defmodule ChatAppWeb.RoomLive.Index do
   end
 
   @impl true
+  def handle_event("join", %{"id" => room_id}, socket) do
+    Rooms.join_room(socket.assigns.current_account.id, room_id)
+
+    socket =
+      socket
+      |> put_flash(:info, "Join room.")
+      |> redirect(to: ~p"/rooms/#{room_id}")
+
+    {:noreply, socket}
+  end
+
   def handle_event("delete", %{"id" => id}, socket) do
     room = Rooms.get_room!(id)
     {:ok, _} = Rooms.delete_room(room)
