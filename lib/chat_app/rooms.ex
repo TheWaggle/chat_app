@@ -39,7 +39,15 @@ defmodule ChatApp.Rooms do
       ** (Ecto.NoResultsError)
 
   """
-  def get_room!(id), do: Repo.get!(Room, id)
+  def get_room!(room_id, account_id) do
+    query =
+      from(r in Room,
+        join: a in assoc(r, :accounts),
+        where: r.id == ^room_id and a.id == ^account_id
+      )
+
+    Repo.one(query)
+  end
 
   def create_room(account_id, attrs \\ %{}) do
     Multi.new()
