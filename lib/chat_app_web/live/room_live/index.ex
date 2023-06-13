@@ -3,10 +3,19 @@ defmodule ChatAppWeb.RoomLive.Index do
 
   alias ChatApp.Rooms
   alias ChatApp.Rooms.Room
+  alias ChatApp.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, stream(socket, :rooms, Rooms.list_rooms())}
+  def mount(_params, session, socket) do
+    account =
+      Accounts.get_account_by_session_token(session["account_token"])
+
+    socket =
+      socket
+      |> stream(:rooms, Rooms.list_rooms())
+      |> assign(:current_account, account)
+
+    {:ok, socket}
   end
 
   @impl true
@@ -33,8 +42,8 @@ defmodule ChatAppWeb.RoomLive.Index do
   end
 
   @impl true
-  def handle_info({ChatAppWeb.RoomLive.FormComponent, {:saved, room}}, socket) do
-    {:noreply, stream_insert(socket, :rooms, room)}
+  def handle_info({ChatAppWeb.RoomLive.FormComponent, {:saved, %Room{id: id}}}, socket) do
+    {:noreply, redirect(socket, to: ~p"/rooms/#{id}")}
   end
 
   @impl true

@@ -68,8 +68,8 @@ defmodule ChatAppWeb.RoomLive.FormComponent do
   end
 
   defp save_room(socket, :new, room_params) do
-    case Rooms.create_room(room_params) do
-      {:ok, room} ->
+    case Rooms.create_room(socket.assigns.current_account.id, room_params) do
+      {:ok, %{room: room}} ->
         notify_parent({:saved, room})
 
         {:noreply,
@@ -77,7 +77,7 @@ defmodule ChatAppWeb.RoomLive.FormComponent do
          |> put_flash(:info, "Room created successfully")
          |> push_patch(to: socket.assigns.patch)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, :room, %Ecto.Changeset{} = changeset, %{}} ->
         {:noreply, assign_form(socket, changeset)}
     end
   end

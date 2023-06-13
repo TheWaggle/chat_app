@@ -5,8 +5,10 @@ defmodule ChatApp.Rooms do
 
   import Ecto.Query, warn: false
   alias ChatApp.Repo
+  alias Ecto.Multi
 
   alias ChatApp.Rooms.Room
+  alias ChatApp.Rooms.Member
 
   @doc """
   Returns the list of rooms.
@@ -37,22 +39,13 @@ defmodule ChatApp.Rooms do
   """
   def get_room!(id), do: Repo.get!(Room, id)
 
-  @doc """
-  Creates a room.
-
-  ## Examples
-
-      iex> create_room(%{field: value})
-      {:ok, %Room{}}
-
-      iex> create_room(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_room(attrs \\ %{}) do
-    %Room{}
-    |> Room.changeset(attrs)
-    |> Repo.insert()
+  def create_room(account_id, attrs \\ %{}) do
+    Multi.new()
+    |> Multi.insert(:room, Room.changeset(%Room{}, attrs))
+    |> Multi.insert(:member, fn %{room: %Room{id: room_id}} ->
+      %Member{account_id: account_id, room_id: room_id}
+    end)
+    |> Repo.transaction()
   end
 
   @doc """

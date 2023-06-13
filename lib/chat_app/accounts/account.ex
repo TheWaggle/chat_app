@@ -12,7 +12,7 @@ defmodule ChatApp.Accounts.Account do
 
     timestamps()
 
-    many_to_many(:rooms, Room, join_defaults: "members")
+    many_to_many(:rooms, Room, join_through: "members")
   end
 
   @doc """
