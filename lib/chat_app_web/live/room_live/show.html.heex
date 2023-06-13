@@ -27,8 +27,8 @@
   <% end %>
 </div>
 
-<.simple_form for={@message_form} phx-submit="send_message">
-  <.input field={@message_form[:message]} type="text" placeholder="Enter please message"/>
+<.simple_form for={@message_form} id="message-form" phx-hook="key" phx-submit="send_message">
+  <.input field={@message_form[:message]} id="message-input" type="text" placeholder="Enter please message"/>
   <:actions>
     <.button>Send message</.button>
   </:actions>
