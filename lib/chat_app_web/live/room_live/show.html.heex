@@ -10,7 +10,7 @@
 
 <.back navigate={~p"/rooms"}>Back to rooms</.back>
 
-<div class="border rounded-lg p-2 mt-2 overflow-auto h-96">
+<div id="scroll-box" phx-hook="scroll" class="border rounded-lg p-2 mt-2 overflow-auto h-96">
   <%= for message <- @messages do %>
     <%
       margin_class =

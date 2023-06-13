@@ -17,4 +17,15 @@ hooks.key = {
   }
 }
 
+hooks.scroll = {
+  mounted(){
+    let target = document.getElementById('scroll-box').lastElementChild
+    target.scrollIntoView(false)
+  },
+  updated(){
+    let target = document.getElementById('scroll-box').lastElementChild
+    target.scrollIntoView(false)
+  }
+}
+
 export default hooks
