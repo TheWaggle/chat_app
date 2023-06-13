@@ -26,7 +26,7 @@ defmodule ChatAppWeb.RoomLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Room")
-    |> assign(:room, Rooms.get_room!(id))
+    |> assign(:room, Rooms.get_room!(id, socket.assigns.current_account.id))
   end
 
   defp apply_action(socket, :new, _params) do

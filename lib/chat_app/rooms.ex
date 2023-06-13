@@ -9,6 +9,7 @@ defmodule ChatApp.Rooms do
 
   alias ChatApp.Rooms.Room
   alias ChatApp.Rooms.Member
+  alias ChatApp.Rooms.Message
 
   @doc """
   Returns the list of rooms.
@@ -25,20 +26,13 @@ defmodule ChatApp.Rooms do
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single room.
+  def list_messages(room_id) do
+    Message
+    |> where([m], m.room_id == ^room_id)
+    |> preload(:account)
+    |> Repo.all()
+  end
 
-  Raises `Ecto.NoResultsError` if the Room does not exist.
-
-  ## Examples
-
-      iex> get_room!(123)
-      %Room{}
-
-      iex> get_room!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_room!(room_id, account_id) do
     query =
       from(r in Room,
@@ -62,6 +56,18 @@ defmodule ChatApp.Rooms do
     %Member{}
     |> Member.changeset(%{"account_id" => account_id, "room_id" => room_id})
     |> Repo.insert()
+  end
+
+  def create_message(attrs \\ %{}) do
+    insert_message =
+      %Message{}
+      |> Message.changeset(attrs)
+      |> Repo.insert()
+
+    case insert_message do
+      {:ok, message} -> {:ok, Repo.preload(message, :account)}
+      _ -> insert_message
+    end
   end
 
   @doc """
@@ -109,5 +115,9 @@ defmodule ChatApp.Rooms do
   """
   def change_room(%Room{} = room, attrs \\ %{}) do
     Room.changeset(room, attrs)
+  end
+
+  def change_message(%Message{} = message, attrs \\ %{}) do
+    Message.changeset(message, attrs)
   end
 end
